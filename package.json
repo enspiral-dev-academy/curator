@@ -1,0 +1,32 @@
+{
+  "name": "curator",
+  "version": "0.0.0",
+  "description": "tool for building curriculum",
+  "main": "curator.coffee",
+  "scripts": {
+    "test": "NODE_ENV=test mocha -b --recursive --compilers coffee:coffee-script/register test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/enspiral-dev-academy/curator"
+  },
+  "keywords": [
+    "open-edu"
+  ],
+  "author": "Enspiral Dev Academy",
+  "license": "AGPL",
+  "bugs": {
+    "url": "https://github.com/enspiral-dev-academy/curator/issues"
+  },
+  "homepage": "https://github.com/enspiral-dev-academy/curator",
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "coffee-script": "^1.9.0",
+    "mocha": "^2.1.0",
+    "sinon": "^1.12.2",
+    "sinon-chai": "^2.6.0"
+  },
+  "dependencies": {
+    "lodash": "^3.1.0"
+  }
+}
