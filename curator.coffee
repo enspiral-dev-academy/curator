@@ -1,3 +1,4 @@
+console.log process.argv
 console.log 'hello'
 
 #pass the command line args
