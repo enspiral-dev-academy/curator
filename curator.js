@@ -3,6 +3,7 @@ var _ = require('lodash');
 var input = _.slice(process.argv, 2, process.argv.length);
 var controllers = require('./lib/controllers/index');
 var Errors = require('./lib/errors/index');
+var helpers = require('./lib/helpers/index');
 
 var argument = input.shift();
 
@@ -12,7 +13,8 @@ switch (argument) {
 		init.initializeFolders(input);
 		break;
 	case 'languages':
-		controllers.displayLanguages();
+		var string = "Currently available languages:";
+		console.log(helpers.displayLanguages(string));
 		break;
 	case undefined:
 		Errors.argument.help();
@@ -21,7 +23,7 @@ switch (argument) {
 		Errors.argument.help();
 		break;
 	default:
-		Errors.argument.invalidArgument(argument);
+		Errors.argument.invalidCommand(argument);
 		break;
 }
 // pass the command line args

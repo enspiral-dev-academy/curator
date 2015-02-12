@@ -5,6 +5,8 @@ var istanbul = require('gulp-istanbul');
 var mocha = require('gulp-mocha');
 var coverageEnforcer = require('gulp-istanbul-enforcer');
 var runSequence = require('run-sequence');
+var del = require('del');
+
 
 var globs = {
   js: {
@@ -95,6 +97,14 @@ gulp.task('mocha-server', function (cb) {
     });
 });
 
+gulp.task('clean:templates', function (cb) {
+  del([
+    '_templates/**',
+  ], cb);
+});
+
+gulp.task('default', ['clean:templates']);
+
 gulp.task('watch', function () {
 
   var watching = false;
@@ -116,7 +126,8 @@ gulp.task('seq-test', function () {
 gulp.task('test', function () {
   return gulp.start('jshint-build',
     'mocha-server',
-    'enforce-coverage');
+    'enforce-coverage'
+    );
 });
 gulp.task('build', function () {
   return gulp.start('jshint-build',
@@ -128,3 +139,5 @@ gulp.task('default', function () {
     'mocha-server',
     'enforce-coverage');
 });
+
+
