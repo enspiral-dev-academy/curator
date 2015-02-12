@@ -1,9 +1,12 @@
 {
-	"curator" : {
+	"curator": {
 		"languages": {
-			"rb" : "Ruby",
-			"cs" : "C#",
-			"js" : "JavaScript"
-		}
+			"rb": "Ruby",
+			"cs": "C#",
+			"js": "JavaScript"
+		},
+		"commands": [
+			{"init": "initialize cwd with _templates folder, stream-specific subfolders, and template md files"}
+		]
 	}
 }

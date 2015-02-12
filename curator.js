@@ -1,19 +1,27 @@
 'use strict';
 var _ = require('lodash');
 var input = _.slice(process.argv, 2, process.argv.length);
-var controllers = require('./lib/controllers/index.js');
+var controllers = require('./lib/controllers/index');
+var Errors = require('./lib/errors/index');
 
-switch (input.shift()) {
+var argument = input.shift();
+
+switch (argument) {
 	case 'init':
-		controllers.init(input);
+		var init = new controllers.init();
+		init.initializeFolders(input);
 		break;
-	case '':
-		console.log("no args", input);
-	// controllers.help();
+	case 'languages':
+		controllers.displayLanguages();
+		break;
+	case undefined:
+		Errors.argument.help();
+		break;
+	case "--help":
+		Errors.argument.help();
 		break;
 	default:
-		console.log("invalid",input);
-		// controllers.invalidArgument(input);
+		Errors.argument.invalidArgument(argument);
 		break;
 }
 // pass the command line args
