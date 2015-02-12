@@ -7,8 +7,13 @@ switch (input.shift()) {
 	case 'init':
 		controllers.init(input);
 		break;
+	case '':
+		console.log("no args", input);
+	// controllers.help();
+		break;
 	default:
-		console.log('default');
+		console.log("invalid",input);
+		// controllers.invalidArgument(input);
 		break;
 }
 // pass the command line args

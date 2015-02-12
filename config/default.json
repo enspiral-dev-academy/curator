@@ -1,0 +1,9 @@
+{
+	"curator" : {
+		"languages": {
+			"rb" : "Ruby",
+			"cs" : "C#",
+			"js" : "JavaScript"
+		}
+	}
+}
