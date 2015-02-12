@@ -11,20 +11,18 @@ var sinon = require('sinon');
 describe('init', function () {
 
 	describe('#initializeFolders', function () {
-		function myfunction() {};
+		function myfunction() {}
 		myfunction.prototype.test = function (testArg) {
 			this.testArg = testArg;
 		};
 
-		var test = new myfunction()
-		test.test('boo')
+		var test = new myfunction();
+		test.test('boo');
 		before(function () {
 			// sinon.stub(myfunction.prototype, 'test');
-			new myfunction().test('hello')
+			new myfunction().test('hello');
 			sinon.stub(test, 'test');
-			test.test('boo')
-			test.constructor.prototype
-			myfunction.prototype
+			test.test('boo');
 		});
 		after(function () {});
 		it('returns true', function () {
@@ -38,7 +36,7 @@ describe('init', function () {
 
 		before(function () {
 
-		})
+		});
 		after(function () {});
 		it('returns true', function () {
 			expect(true).to.eql(true);
