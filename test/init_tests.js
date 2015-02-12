@@ -5,8 +5,6 @@ chai.use(sinonChai);
 var expect = chai.expect;
 var sinon = require('sinon');
 
-
-
 // FUNKY EXPLAINING OF SINON AND PROTOTYPES:
 describe('init', function () {
 
@@ -17,18 +15,17 @@ describe('init', function () {
 		};
 
 		var test = new myfunction();
-		test.test('boo');
 		before(function () {
-			// sinon.stub(myfunction.prototype, 'test');
-			new myfunction().test('hello');
-			sinon.stub(test, 'test');
-			test.test('boo');
 		});
 		after(function () {});
-		it('returns true', function () {
+		it('calls method directly', function () {
+      sinon.stub(test, 'test');
+			test.test('boo');
 			expect(test.test.calledWith('boo')).to.eql(true);
 		});
-		it('returns true', function () {
+		it('calls prototype method', function () {
+      sinon.stub(myfunction.prototype, 'test');
+      myfunction.prototype.test('hello');
 			expect(myfunction.prototype.test.calledWith('hello')).to.eql(true);
 		});
 	});
