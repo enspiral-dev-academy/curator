@@ -1,3 +1,2 @@
 #! /bin/bash
-#node `$BASH_SOURCE`/ curator.js $*
-node "$(dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))/curator.js" $* 
+node "$(dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))/curator.js" $*
