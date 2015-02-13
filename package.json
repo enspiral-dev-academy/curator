@@ -29,7 +29,6 @@
     "gulp-istanbul-enforcer": "^1.0.3",
     "gulp-jshint": "^1.9.2",
     "gulp-mocha": "^2.0.0",
-    "gulp-run-sequence": "^0.3.2",
     "jshint-growl-reporter": "^0.1.1",
     "jshint-stylish": "^1.0.0",
     "mocha": "^2.1.0",
