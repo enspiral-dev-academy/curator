@@ -12,6 +12,10 @@ var start = function () {
 			var init = new controllers.init();
 			init.initializeFolders(input);
 			break;
+		case 'build':
+			var builder = new controllers.build();
+			builder.bricklay(input);
+			break;
 		case 'languages':
 			var string = "Currently available languages:";
 			console.log(helpers.displayLanguages(string));
