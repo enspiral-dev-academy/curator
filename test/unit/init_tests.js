@@ -86,31 +86,64 @@ describe('init', function () {
 				it('creates _templates folder', function () {
 					return expect(fs.existsSync(templatePath)).to.eql(true);
 				});
+				it('creates templates.md file', function () {
+					return expect(fs.existsSync(templatePath + '/template.md')).to.eql(true);
+				});
 				it('calls #createFolders with correct params', function () {
 					return expect(init.createFolders.calledWith(folders)).to.eql(true);
 				});
 			});
+
 			describe('with existing _templates folder', function () {
-				before(function () {
-					return fs.mkdirAsync(templatePath)
-						.then(function () {
-							sinon.spy(fs, 'mkdirAsync');
-						});
+				describe('with no existing templates.md file', function () {
+					before(function () {
+						return fs.mkdirAsync(templatePath)
+							.then(function () {
+								sinon.spy(fs, 'mkdirAsync');
+							});
+					});
+					after(function (done) {
+						fs.mkdirAsync.restore();
+						del([
+							'_templates/**',
+						], done);
+					});
+					it('calls #createFolders with correct params', function () {
+						return init.initializeFolders(folders)
+							.then(function () {
+								return expect(init.createFolders.calledWith(folders)).to.eql(true);
+							});
+					});
+					it('doesnt call fs.mkdirAsync', function () {
+						return expect(fs.mkdirAsync.notCalled).to.eql(true);
+					});
+					it('creates templates.md file', function () {
+						return expect(fs.existsSync(templatePath + '/template.md')).to.eql(true);
+					});
 				});
-				after(function (done) {
-					fs.mkdirAsync.restore();
-					del([
-						'_templates/**',
-					], done);
-				});
-				it('calls #createFolders with correct params', function () {
-					return init.initializeFolders(folders)
-						.then(function () {
-							return expect(init.createFolders.calledWith(folders)).to.eql(true);
-						});
-				});
-				it('doesnt call fs.mkdirAsync', function () {
-					return expect(fs.mkdirAsync.notCalled).to.eql(true);
+				describe('with existing templates.md file', function () {
+					before(function () {
+						return fs.mkdirAsync(templatePath)
+							.then(function () {
+								sinon.spy(fs, 'mkdirAsync');
+								return fs.openAsync(templatePath + '/template.md', 'wx+');
+							});
+					});
+					after(function (done) {
+						fs.mkdirAsync.restore();
+						del([
+							'_templates/**',
+						], done);
+					});
+					it('calls #createFolders with correct params', function () {
+						return init.initializeFolders(folders)
+							.then(function () {
+								return expect(init.createFolders.calledWith(folders)).to.eql(true);
+							});
+					});
+					it('doesnt call fs.mkdirAsync', function () {
+						return expect(fs.mkdirAsync.notCalled).to.eql(true);
+					});
 				});
 			});
 		});
