@@ -11,6 +11,7 @@ var path = require('path');
 var cwd = process.cwd();
 var del = require('del');
 var errors = require('errors');
+var _ = require('lodash');
 // var del = BBPromise.promisify(require('del'));
 
 var templatePath = path.resolve(cwd, '_templates');
@@ -42,7 +43,20 @@ describe('init', function () {
 				return expect(console.log).to.have.been.calledWith(new errors.noFolderSpecified().toString());
 			});
 		});
-		describe(' with valid folders', function () {
+		describe('with invalid folders', function () {
+			var folders = ['tr', 'fake'];
+			before(function () {
+				sinon.spy(console, 'log');
+				return init.initializeFolders(folders);
+			});
+			after(function () {
+				console.log.restore();
+			});
+			it('console.logs an invalidArgument error', function () {
+				return expect(console.log).to.have.been.calledWith(new errors.invalidArgument().toString());
+			});
+		});
+		describe('with valid folders', function () {
 			var folders = ['rb', 'cs', 'js'];
 			before(function () {
 				sinon.stub(init, 'createFolders').returns(BBPromise.resolve({}));
@@ -78,7 +92,7 @@ describe('init', function () {
 			});
 			describe('with existing _templates folder', function () {
 				before(function () {
-					return fs.mkdirAsync(path.resolve(cwd, '_templates'))
+					return fs.mkdirAsync(templatePath)
 						.then(function () {
 							sinon.spy(fs, 'mkdirAsync');
 						});
@@ -101,9 +115,98 @@ describe('init', function () {
 			});
 		});
 	});
-	describe('#createFolders', function () {
-		before(function () {});
-		after(function () {});
-		xit('returns true', function () {});
+	describe('#createFiles', function () {
+		var filenames = ['code.md', 'links.md', 'text.md'];
+		var nestedFolderPath = path.resolve(templatePath, 'rb');
+		var filesPaths;
+		var successFileStrings;
+		before(function () {
+			filesPaths = _.map(filenames, function (name) {
+				return path.resolve(nestedFolderPath, name);
+			});
+			successFileStrings = _.map(filenames, function (name) {
+				return 'SUCCESS: ' + name + ' added to ' + nestedFolderPath;
+			});
+		});
+		describe('with no existing files', function () {
+			before(function () {
+				sinon.spy(console, 'log');
+				sinon.spy(path, 'resolve');
+				sinon.spy(fs, 'openAsync');
+				return fs.mkdirAsync(templatePath)
+					.then(function () {
+						return fs.mkdirAsync(nestedFolderPath)
+							.then(function () {
+								return init.createFiles(nestedFolderPath);
+							});
+					});
+			});
+			after(function (done) {
+				console.log.restore();
+				path.resolve.restore();
+				fs.openAsync.restore();
+				del([
+					'_templates/**',
+				], done);
+			});
+			it('calls fs#openAsync for each of the required files', function () {
+				expect(fs.openAsync.calledWith(filesPaths[0], 'wx+')).to.eql(true);
+				expect(fs.openAsync.calledWith(filesPaths[1], 'wx+')).to.eql(true);
+				expect(fs.openAsync.calledWith(filesPaths[2], 'wx+')).to.eql(true);
+			});
+			it('console.logs success message for each file created', function () {
+				expect(console.log).to.have.been.calledWith(successFileStrings[0]);
+				expect(console.log).to.have.been.calledWith(successFileStrings[1]);
+				expect(console.log).to.have.been.calledWith(successFileStrings[2]);
+			});
+			it('creates a file for links, text and code', function () {
+				expect(fs.existsSync(nestedFolderPath + '/code.md')).to.eql(true);
+				expect(fs.existsSync(nestedFolderPath + '/links.md')).to.eql(true);
+				expect(fs.existsSync(nestedFolderPath + '/text.md')).to.eql(true);
+			});
+		});
+
+		describe('with existing files', function () {
+			var errorMessage = 'ERROR: ' + nestedFolderPath + '/' + filenames[0] + " already exists!";
+			before(function () {
+				sinon.spy(console, 'log');
+				sinon.spy(path, 'resolve');
+				sinon.spy(fs, 'openAsync');
+
+				return fs.mkdirAsync(templatePath)
+					.then(function () {
+						return fs.mkdirAsync(nestedFolderPath)
+							.then(function () {
+								return fs.openAsync(filesPaths[0], "wx+")
+									.then(function () {
+										return init.createFiles(nestedFolderPath);
+									});
+							});
+					});
+			});
+			after(function (done) {
+				console.log.restore();
+				path.resolve.restore();
+				fs.openAsync.restore();
+				del([
+					'_templates/**',
+				], done);
+			});
+			it('calls fs#openAsync for each of the required files', function () {
+				expect(fs.openAsync.calledWith(filesPaths[0], 'wx+')).to.eql(true);
+				expect(fs.openAsync.calledWith(filesPaths[1], 'wx+')).to.eql(true);
+				expect(fs.openAsync.calledWith(filesPaths[2], 'wx+')).to.eql(true);
+			});
+			it('console.logs error message for each file created', function () {
+				expect(console.log).to.have.been.calledWith(errorMessage);
+				expect(console.log).to.have.been.calledWith(successFileStrings[1]);
+				expect(console.log).to.have.been.calledWith(successFileStrings[2]);
+			});
+			it('creates a file for links, text and code', function () {
+				expect(fs.existsSync(nestedFolderPath + '/code.md')).to.eql(true);
+				expect(fs.existsSync(nestedFolderPath + '/links.md')).to.eql(true);
+				expect(fs.existsSync(nestedFolderPath + '/text.md')).to.eql(true);
+			});
+		});
 	});
 });
