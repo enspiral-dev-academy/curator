@@ -3,7 +3,7 @@ var sinonChai = require("sinon-chai");
 chai.use(sinonChai);
 var expect = chai.expect;
 var sinon = require('sinon');
-var Init = require('../../lib/controllers/init_prototype');
+var Init = require('../../lib/controllers/init');
 var init = new Init();
 var BBPromise = require('bluebird');
 var fs = BBPromise.promisifyAll(require('fs'));

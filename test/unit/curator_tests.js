@@ -3,7 +3,7 @@ var sinonChai = require("sinon-chai");
 chai.use(sinonChai);
 var expect = chai.expect;
 var sinon = require('sinon');
-var initController = require('../../lib/controllers/init_prototype');
+var initController = require('../../lib/controllers/init');
 var uncache = require('require-uncache');
 var path = require('path');
 var cwd = process.cwd();
