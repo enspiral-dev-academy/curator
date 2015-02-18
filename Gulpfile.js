@@ -1,43 +1,32 @@
 'use strict';
+var coffee = require('gulp-coffee');
 var gulp = require('gulp');
-var jshint = require('gulp-jshint');
 var istanbul = require('gulp-istanbul');
+var gutil  = require('gulp-util');
 var mocha = require('gulp-mocha');
+require('coffee-script/register');
 var coverageEnforcer = require('gulp-istanbul-enforcer');
-var runSequence = require('run-sequence');
-var del = require('del');
-
 
 var globs = {
-  js: {
-    lib: ['curator.js', 'lib/*/*.js'],
-    gulpfile: ['Gulpfile.js'],
-    specs: ['test/*/*.js', '!test/fixtures/*']
-  },
-  specs: ['test/*/*.js', '!test/fixtures/*']
+	js: {
+		lib: ['curator.js', 'lib/*/*.js'],
+		gulpfile: ['Gulpfile.js'],
+		specs: ['test/*/*.coffee', '!test/fixtures/*']
+	},
+	specs: ['test/*/*.coffee', '!test/fixtures/*']
 };
-
-function runJshint() {
-  return gulp.src(
-      globs.js.lib.concat(
-        globs.js.gulpfile.concat(globs.js.specs))
-    )
-    .pipe(jshint())
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(jshint.reporter('jshint-growl-reporter'));
-}
 
 function mochaServer(options) {
 
-    return gulp.src(globs.specs, {
-        read: false
-      })
-      .pipe(mocha(options || {
-        reporter: 'nyan',
-        growl: true
-      }));
-  }
-  // Testing
+	return gulp.src(globs.specs, {
+			read: false
+		})
+		.pipe(mocha(options || {
+			reporter: 'nyan',
+			growl: true
+		}));
+}
+
 var coverageOptions = {
   dir: './coverage',
   reporters: ['html', 'lcov', 'text-summary', 'html', 'json'],
@@ -46,31 +35,19 @@ var coverageOptions = {
   }
 };
 
-gulp.task('jshint-build', function () {
-  return runJshint()
-    .pipe(jshint.reporter('fail'));
-});
-gulp.task('jshint', function () {
-  return runJshint();
+gulp.task('mocha-server', function (cb) {
+	gulp.src(globs.js.lib)
+		.pipe(istanbul())
+		.pipe(istanbul.hookRequire())
+		.on('finish', function () {
+			mochaServer({
+					reporter: 'spec'
+				})
+				.pipe(istanbul.writeReports(coverageOptions))
+				.on('end', cb);
+		});
 });
 
-
-
-gulp.task('mocha-server-continue', function (cb) {
-  gulp.src(globs.js.lib)
-    .pipe(istanbul())
-    .on('error', function (err) {
-      console.log('istanbul error', err);
-    })
-    .on('finish', function () {
-      mochaServer().on('error', function (err) {
-          console.trace(err);
-          this.emit('end');
-          cb();
-        }).pipe(istanbul.writeReports(coverageOptions))
-        .on('end', cb);
-    });
-});
 gulp.task('enforce-coverage', ['mocha-server'], function () {
   var options = {
     thresholds: {
@@ -85,52 +62,18 @@ gulp.task('enforce-coverage', ['mocha-server'], function () {
   return gulp.src(globs.js.lib)
     .pipe(coverageEnforcer(options));
 });
-gulp.task('mocha-server', function (cb) {
-  gulp.src(globs.js.lib)
-  .pipe(istanbul())
-    .pipe(istanbul.hookRequire())
-    .on('finish', function () {
-      mochaServer({
-          reporter: 'spec'
-        })
-        .pipe(istanbul.writeReports(coverageOptions))
-        .on('end', cb);
-    });
-});
 
-gulp.task('watch', function () {
-
-  var watching = false;
-  gulp.start(
-    'jshint',
-    'mocha-server-continue',
-    function () {
-      // Protect against this function being called twice
-      if (!watching) {
-        watching = true;
-        gulp.watch(globs.js.lib.concat(
-          globs.js.specs), ['seq-test']);
-        gulp.watch(globs.js.Gulpfile, ['jshint']);
-      }
-    });
-});
-gulp.task('seq-test', function () {
-  runSequence('jshint', 'mocha-server-continue');
-});
 gulp.task('test', function () {
-  return gulp.start('jshint-build',
-    'mocha-server',
-    'enforce-coverage'
+  return gulp.start(
+  	'enforce-coverage',
+    'mocha-server'
   );
 });
 
-gulp.task('build', function () {
-  return gulp.start('jshint-build',
-    'mocha-server',
-    'enforce-coverage');
-});
-gulp.task('default', function () {
-  return gulp.start('jshint-build',
-    'mocha-server',
-    'enforce-coverage');
+gulp.task('coffee', function () {
+	gulp.src('./src/*.coffee')
+		.pipe(coffee({
+			bare: true
+		}).on('error', gutil.log))
+		.pipe(gulp.dest('./public/'))
 });

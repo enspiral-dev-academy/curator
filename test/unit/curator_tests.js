@@ -1,3 +1,4 @@
+'use strict';
 var chai = require('chai');
 var sinonChai = require("sinon-chai");
 chai.use(sinonChai);
@@ -15,7 +16,7 @@ describe('curator', function () {
 	describe('init', function () {
 		describe('with one cli argument', function () {
 			before(function () {
-				args = ['node', 'some file path', 'init', 'rb'];
+				var args = ['node', 'some file path', 'init', 'rb'];
 				sinon.stub(initController.prototype, 'initializeFolders');
 				process.argv = args;
 				require('../../curator');
@@ -48,7 +49,7 @@ describe('curator', function () {
 	describe('languages', function () {
 		before(function () {
 			uncache(path.resolve(cwd, 'curator'));
-			args = ['node', 'some file path', 'languages'];
+			var args = ['node', 'some file path', 'languages'];
 			process.argv = args;
 			sinon.spy(console, 'log');
 			require('../../curator');
@@ -65,7 +66,7 @@ describe('curator', function () {
 	describe('no argument', function () {
 		before(function () {
 			uncache(path.resolve(cwd, 'curator'));
-			args = ['node', 'some file path'];
+		var args = ['node', 'some file path'];
 			process.argv = args;
 			sinon.spy(console, 'log');
 			require('../../curator');
@@ -81,7 +82,7 @@ describe('curator', function () {
 	describe('--help', function () {
 		before(function () {
 			uncache(path.resolve(cwd, 'curator'));
-			args = ['node', 'some file path', '--help'];
+			var args = ['node', 'some file path', '--help'];
 			process.argv = args;
 			sinon.spy(console, 'log');
 			require('../../curator');
