@@ -32,7 +32,7 @@ Build::setOptions = (folders)     ->
       opts.find.push find
       return
     ), concurrency: 1).then ->
-gi      models.findAndReplace.execute opts
+      models.findAndReplace.execute opts
   ), concurrency: 1
 
 module.exports = Build

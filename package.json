@@ -4,7 +4,8 @@
   "description": "tool for building curriculum",
   "main": "curator.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha -b --recursive --compilers coffee:coffee-script/register test"
+    "test": "NODE_ENV=test mocha -b --recursive --compilers coffee:coffee-script/register test",
+    "start": "./bin/curator"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,6 @@
     "chai": "^1.10.0",
     "coffee-script": "^1.9.0",
     "del": "^1.1.1",
-    "errors": "^0.2.0",
     "gulp": "^3.8.11",
     "gulp-coffee": "^2.3.1",
     "gulp-coffee-istanbul": "^0.7.0",
@@ -44,6 +44,11 @@
   "dependencies": {
     "bluebird": "^2.9.8",
     "config": "^1.10.0",
+    "errors": "^0.2.0",
     "lodash": "^3.1.0"
+  },
+  "preferGlobal": true,
+  "directories": {
+    "bin": "./bin"
   }
 }

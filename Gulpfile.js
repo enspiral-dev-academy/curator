@@ -6,7 +6,6 @@ var gutil  = require('gulp-util');
 var mocha = require('gulp-mocha');
 require('coffee-script/register');
 var coverageEnforcer = require('gulp-istanbul-enforcer');
-var gulpif = require('gulp-if');
 
 var globs = {
 	js: {

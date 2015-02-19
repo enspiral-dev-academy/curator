@@ -1,4 +1,6 @@
 'use strict'
+process.env['NODE_CONFIG_DIR'] = "#{__dirname}/config"
+
 _ = require('lodash')
 input = _.slice(process.argv, 2, process.argv.length)
 controllers = require('./lib/controllers/index')

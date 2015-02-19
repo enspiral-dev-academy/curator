@@ -1,2 +1,9 @@
-#! /bin/bash
-coffee "$(dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))/curator.coffee" $*
+#! /usr/local/bin/coffee
+#currentdir=$(dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))
+#NODE_CONFIG_DIR=$currentdir/config coffee "$(dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ))/curator.coffee" $*
+
+
+
+require('../curator')
+
+
