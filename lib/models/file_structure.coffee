@@ -1,3 +1,9 @@
+'use strict'
+
+cwd = process.cwd()
+_ = require('lodash')
+path = require('path')
+
 FileStructure = ->
   @filenames = [
     'code.md'
@@ -6,10 +12,7 @@ FileStructure = ->
   ]
   return
 
-'use strict'
-cwd = process.cwd()
-_ = require('lodash')
-path = require('path')
+  
 FileStructure.prototype = getFolders: (language) ->
   files = _templates: path.resolve(cwd, '_templates')
   files.template = path.resolve(files._templates, 'template.md')

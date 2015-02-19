@@ -1,15 +1,16 @@
 'use strict';
 var coffee = require('gulp-coffee');
 var gulp = require('gulp');
-var istanbul = require('gulp-istanbul');
+var istanbul = require('gulp-coffee-istanbul');
 var gutil  = require('gulp-util');
 var mocha = require('gulp-mocha');
 require('coffee-script/register');
 var coverageEnforcer = require('gulp-istanbul-enforcer');
+var gulpif = require('gulp-if');
 
 var globs = {
 	js: {
-		lib: ['curator.js', 'lib/*/*.js'],
+		lib: ['curator.coffee', 'lib/*/*.coffee'],
 		gulpfile: ['Gulpfile.js'],
 		specs: ['test/*/*.coffee', '!test/fixtures/*']
 	},
@@ -36,7 +37,7 @@ var coverageOptions = {
 };
 
 gulp.task('mocha-server', function (cb) {
-	gulp.src(globs.js.lib)
+	gulp.src(globs.js.lib.concat(globs.specs))
 		.pipe(istanbul())
 		.pipe(istanbul.hookRequire())
 		.on('finish', function () {
@@ -75,5 +76,5 @@ gulp.task('coffee', function () {
 		.pipe(coffee({
 			bare: true
 		}).on('error', gutil.log))
-		.pipe(gulp.dest('./public/'))
+		.pipe(gulp.dest('./public/'));
 });

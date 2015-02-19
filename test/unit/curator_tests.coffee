@@ -10,6 +10,7 @@ path = require('path')
 cwd = process.cwd()
 helpers = require('../../lib/helpers/index')
 errors = require('errors')
+
 describe 'curator', ->
   describe 'init', ->
     describe 'with one cli argument', ->
