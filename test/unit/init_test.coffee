@@ -21,7 +21,7 @@ describe 'init', ->
   describe '#initializeFolders', ->
     describe 'with no argument', ->
       before ->
-        sinon.spy console, 'log'
+        sinon.stub console, 'log'
         init.initializeFolders()
       after ->
         console.log.restore()
@@ -31,7 +31,7 @@ describe 'init', ->
       return
     describe 'with folders = []', ->
       before ->
-        sinon.spy console, 'log'
+        sinon.stub console, 'log'
         init.initializeFolders []
       after ->
         console.log.restore()
@@ -45,7 +45,7 @@ describe 'init', ->
         'fake'
       ]
       before ->
-        sinon.spy console, 'log'
+        sinon.stub console, 'log'
         init.initializeFolders folders
       after ->
         console.log.restore()
@@ -54,15 +54,13 @@ describe 'init', ->
         expect(console.log).to.have.been.calledWith (new (errors.invalidArgument)).toString()
       return
     describe 'with valid folders', ->
-      folders = [
-        'rb'
-        'cs'
-        'js'
-      ]
+      folders = ['rb', 'cs', 'js' ]
       before ->
+        sinon.stub console, 'log'
         sinon.stub(init, 'createFolders').returns BBPromise.resolve({})
         return
       after ->
+        console.log.restore()
         init.createFolders.restore()
         return
       describe 'with no existing _templates folder', ->
@@ -139,7 +137,7 @@ describe 'init', ->
       return
     describe 'with no existing files', ->
       before ->
-        sinon.spy console, 'log'
+        sinon.stub console, 'log'
         sinon.spy path, 'resolve'
         sinon.spy fs, 'openAsync'
         fs.mkdirAsync(templatePath).then ->
@@ -170,7 +168,7 @@ describe 'init', ->
     describe 'with existing files', ->
       errorMessage = 'ERROR: ' + nestedFolderPath + '/' + filenames[0] + ' already exists!'
       before ->
-        sinon.spy console, 'log'
+        sinon.stub console, 'log'
         sinon.spy path, 'resolve'
         sinon.spy fs, 'openAsync'
         fs.mkdirAsync(templatePath).then ->

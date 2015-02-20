@@ -15,7 +15,7 @@ describe 'Build', ->
   describe '#bricklay', ->
     describe 'with no argument', ->
       before ->
-        sinon.spy console, 'log'
+        sinon.stub console, 'log'
         builder.bricklay()
       after ->
         console.log.restore()
@@ -23,7 +23,7 @@ describe 'Build', ->
         expect(console.log).to.have.been.calledWith (new (errors.noFolderSpecified)).toString()
     describe 'with folders = []', ->
       before ->
-        sinon.spy console, 'log'
+        sinon.stub console, 'log'
         builder.bricklay []
       after ->
         console.log.restore()
@@ -35,7 +35,7 @@ describe 'Build', ->
         'fake'
       ]
       before ->
-        sinon.spy console, 'log'
+        sinon.stub console, 'log'
         builder.bricklay folders
       after ->
         console.log.restore()
@@ -70,7 +70,6 @@ describe 'Build', ->
         code: '/Users/amelia/Documents/eda/curator/_templates/rb/code.md'
         links: '/Users/amelia/Documents/eda/curator/_templates/rb/links.md'
         text: '/Users/amelia/Documents/eda/curator/_templates/rb/text.md' 
-      console.log('fileStructure!', fileStructure)
       sinon.stub(models.findAndReplace, 'execute')
       sinon.stub( models.fileStructure, 'getFolders').returns fileStructure
       builder.setOptions(folders)

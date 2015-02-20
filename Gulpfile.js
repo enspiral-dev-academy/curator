@@ -2,10 +2,11 @@
 var coffee = require('gulp-coffee');
 var gulp = require('gulp');
 var istanbul = require('gulp-coffee-istanbul');
-var gutil  = require('gulp-util');
+var gutil = require('gulp-util');
 var mocha = require('gulp-mocha');
 require('coffee-script/register');
 var coverageEnforcer = require('gulp-istanbul-enforcer');
+var path = require('path');
 
 var globs = {
 	js: {
@@ -28,11 +29,11 @@ function mochaServer(options) {
 }
 
 var coverageOptions = {
-  dir: './coverage',
-  reporters: ['html', 'lcov', 'text-summary', 'html', 'json'],
-  reportOpts: {
-    dir: './coverage'
-  }
+	dir: './coverage',
+	reporters: ['html', 'lcov', 'text-summary', 'html', 'json'],
+	reportOpts: {
+		dir: './coverage'
+	}
 };
 
 gulp.task('mocha-server', function (cb) {
@@ -48,26 +49,37 @@ gulp.task('mocha-server', function (cb) {
 		});
 });
 
+gulp.task('test-debug', function () {
+	var spawn = require('child_process').spawn;
+	spawn('node', [
+		'--debug-brk',
+		path.join(__dirname, 'node_modules/gulp/bin/gulp.js'),
+		'test'
+	], {
+		stdio: 'inherit'
+	});
+});
+
 gulp.task('enforce-coverage', ['mocha-server'], function () {
-  var options = {
-    thresholds: {
-      statements: 80,
-      branches: 80,
-      lines: 80,
-      functions: 80
-    },
-    coverageDirectory: 'coverage',
-    rootDirectory: process.cwd()
-  };
-  return gulp.src(globs.js.lib)
-    .pipe(coverageEnforcer(options));
+	var options = {
+		thresholds: {
+			statements: 80,
+			branches: 80,
+			lines: 80,
+			functions: 80
+		},
+		coverageDirectory: 'coverage',
+		rootDirectory: process.cwd()
+	};
+	return gulp.src(globs.js.lib)
+		.pipe(coverageEnforcer(options));
 });
 
 gulp.task('test', function () {
-  return gulp.start(
-  	'enforce-coverage',
-    'mocha-server'
-  );
+	return gulp.start(
+		'enforce-coverage',
+		'mocha-server'
+	);
 });
 
 gulp.task('coffee', function () {

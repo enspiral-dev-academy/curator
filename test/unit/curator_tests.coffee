@@ -68,7 +68,7 @@ describe 'curator', ->
         'languages'
       ]
       process.argv = args
-      sinon.spy console, 'log'
+      sinon.stub console, 'log'
       require '../../curator'
       return
     after ->
@@ -87,7 +87,7 @@ describe 'curator', ->
         'some file path'
       ]
       process.argv = args
-      sinon.spy console, 'log'
+      sinon.stub console, 'log'
       require '../../curator'
       return
     after ->
@@ -106,7 +106,7 @@ describe 'curator', ->
         '--help'
       ]
       process.argv = args
-      sinon.spy console, 'log'
+      sinon.stub console, 'log'
       require '../../curator'
       return
     after ->
