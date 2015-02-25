@@ -15,9 +15,9 @@ class Init extends BaseController
   constructor: ->
     @templatePath = path.resolve(cwd, mainFolder)
 
-
   initializeFolders: (folders) ->
     return unless @checkFolders(folders)
+    folders = if (folders[0] is '.') then config.get('curator.allLanguages') else folders
     templateFile = path.resolve(@templatePath, 'template.md')
     if fs.existsSync(@templatePath)
       # folder already there

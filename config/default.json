@@ -3,13 +3,16 @@
 		"languages": {
 			"rb": "Ruby",
 			"cs": "C#",
-			"js": "JavaScript"
+			"js": "JavaScript",
+			".": "all"
 		},
+		"allLanguages": ["rb", "cs", "js"],
 		"fileTypes": ["code", "links", "text"],
 		"commands": [
 			{"init": "initialize cwd with _templates folder, stream-specific subfolders, and template md files"}
 		],
 		"mainFolder": "_templates",
-		"templateString": "Start of file.\ninclude:text\nthis will include any text associated with the desired language\ninclude:code\nThis will include any text from the desired language\ninclude:links\nThis will include any links from the desired language"
+		"templateString": "Start of file.\ninclude:text\nthis will include any text associated with the desired language\ninclude:code\nThis will include any text from the desired language\ninclude:links\nThis will include any links from the desired language",
+		"findPhrases": ["include:code", "include:links", "include:text"]
 	}
 }
