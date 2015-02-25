@@ -1,0 +1,7 @@
+{
+	"node": true,
+	"mocha": true,
+	"eqeqeq": true,
+	"unused": true,
+	"strict": true
+}

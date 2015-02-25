@@ -1,2 +1,2 @@
-#! /bin/bash
-coffee curator.coffee $*
+#! /usr/local/bin/coffee
+require('../curator')
