@@ -10,6 +10,7 @@ errors = require('errors')
 BBPromise = require('bluebird')
 fs = BBPromise.promisifyAll(require('fs'))
 models = require('../../lib/models/index')
+config = require('config')
 
 describe 'Build', ->
   describe '#bricklay', ->
@@ -41,6 +42,15 @@ describe 'Build', ->
         console.log.restore()
       it 'console.logs an invalidArgument error', ->
         expect(console.log).to.have.been.calledWith (new (errors.invalidArgument)).toString()
+    describe 'with ONE valid folder', ->
+      folder = ['rb']
+      before ->
+        sinon.stub(builder, 'setOptions').returns BBPromise.resolve({})
+        builder.bricklay folder
+      after ->
+        builder.setOptions.restore()
+      it 'calls builder#setOptions', ->
+        expect(builder.setOptions.calledWith(folder)).to.eql true
     describe 'with valid folders', ->
       folders = ['rb', 'cs', 'js']
       before ->
@@ -50,11 +60,13 @@ describe 'Build', ->
         builder.setOptions.restore()
       it 'calls builder#setOptions', ->
         expect(builder.setOptions.calledWith(folders)).to.eql true
+      it 'calls builder#setOptions', ->
+        expect(builder.setOptions.calledWith(folders)).to.eql true
   describe '#setOptions', ->
     folders = ['rb', 'cs', 'js']
     options = 
       encoding: 'utf8'
-      find: [/include:code/, /include:links/, /include:text/ ]
+      find: config.get('curator.findPhrases')
       replace: [
         '/Users/amelia/Documents/eda/curator/_templates/rb/code.md'
         '/Users/amelia/Documents/eda/curator/_templates/rb/links.md'

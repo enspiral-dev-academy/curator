@@ -11,23 +11,21 @@ class Build extends BaseController
   # constructor: ->
   bricklay: (folders) ->
     return unless @checkFolders(folders)
+    folders = if (folders[0] is '.') then config.get('curator.allLanguages') else folders
     @setOptions folders
 
   setOptions: (folders) ->
     opts = encoding: 'utf8'
     BBPromise.map  folders, ((folder) ->
-      opts.find = []
+      opts.find = config.get('curator.findPhrases')
       opts.replace = []
       fileStructure = models.fileStructure.getFolders(folder)
       opts.dest = fileStructure.newTemplate
       opts.src = fileStructure.template
       BBPromise.map(fileTypes, ((type) ->
         opts.replace.push fileStructure[type]
-        find = 'include:' + type
-        find = new RegExp(find)
-        opts.find.push find
-        return
-      ), concurrency: 1).then ->
+      ), concurrency: 1)
+      .then ->
         models.findAndReplace.execute opts
     ), concurrency: 1
 
