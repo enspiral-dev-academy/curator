@@ -6,7 +6,7 @@
 			"js": "JavaScript",
 			".": "all"
 		},
-		"allLanguages": ["rb", "cs", "js"],
+		"allLanguages": ["rb", "cs"],
 		"fileTypes": ["code", "links", "text"],
 		"commands": [
 			{"init": "initialize cwd with _templates folder, stream-specific subfolders, and template md files"}
