@@ -66,6 +66,6 @@ class Init extends BaseController
       fs.openAsync(nestedFilePath, 'wx+').then(->
         console.log 'SUCCESS: ' + filename + ' added to ' + nestedFolderPath
       ).catch (err) ->
-        console.log 'ERROR: ' + nestedFolderPath + '/' + filename + ' already exists!'
+        console.log 'WARNING: ' + nestedFolderPath + '/' + filename + ' already exists!'
     )
 module.exports = Init
