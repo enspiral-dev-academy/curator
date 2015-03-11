@@ -15,13 +15,13 @@ class Build extends BaseController
     @setOptions folders
 
   setOptions: (folders) ->
-    opts = encoding: 'utf8'
-    BBPromise.map  folders, ((folder) ->
+    BBPromise.map(folders, ((folder) ->
+      opts = encoding: 'utf8'
       fileStructure = models.fileStructure.getFolders(folder)
       opts.dest = fileStructure.newTemplate
       opts.src = fileStructure.template
       opts.replace = fileStructure[folder]
       models.findAndReplace.execute opts
-    ), concurrency: 1
+    ), concurrency: 1)
 
 module.exports = Build

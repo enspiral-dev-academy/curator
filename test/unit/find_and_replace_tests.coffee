@@ -9,7 +9,7 @@ BBPromise = require('bluebird')
 fs = BBPromise.promisifyAll(require('fs'))
 config = require('config')
 
-describe 'find and replace model', ->
+describe.skip 'find and replace model', ->
 	describe '#execute', ->
 		options = {
 			encoding: 'utf8'

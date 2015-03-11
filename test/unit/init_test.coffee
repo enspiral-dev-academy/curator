@@ -192,7 +192,7 @@ describe 'init', ->
         expect(fs.existsSync(nestedFolderPath + '/links.md')).to.eql true
         expect(fs.existsSync(nestedFolderPath + '/text.md')).to.eql true
     describe 'with existing files', ->
-      errorMessage = 'ERROR: ' + nestedFolderPath + '/' + filenames[0] + ' already exists!'
+      errorMessage = 'WARNING: ' + nestedFolderPath + '/' + filenames[0] + ' already exists!'
       before ->
         sinon.stub console, 'log'
         sinon.spy path, 'resolve'
@@ -210,7 +210,7 @@ describe 'init', ->
         expect(fs.openAsync.calledWith(filesPaths[0], 'wx+')).to.eql true
         expect(fs.openAsync.calledWith(filesPaths[1], 'wx+')).to.eql true
         expect(fs.openAsync.calledWith(filesPaths[2], 'wx+')).to.eql true
-      it 'console.logs error message for each file created', ->
+      it 'console.logs warning message for each file created', ->
         expect(console.log).to.have.been.calledWith errorMessage
         expect(console.log).to.have.been.calledWith successFileStrings[1]
         expect(console.log).to.have.been.calledWith successFileStrings[2]

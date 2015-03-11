@@ -11,7 +11,9 @@ BBPromise = require('bluebird')
 fs = BBPromise.promisifyAll(require('fs'))
 models = require('../../lib/models/index')
 config = require('config')
-
+path = require('path')
+cwd = path.resolve(process.cwd())
+ 
 describe 'Build', ->
   describe '#bricklay', ->
     describe 'with no argument', ->
@@ -64,26 +66,45 @@ describe 'Build', ->
         expect(builder.setOptions.calledWith(folders)).to.eql true
   describe '#setOptions', ->
     folders = ['rb', 'cs', 'js']
-    options = 
-      encoding: 'utf8'
-      find: config.get('curator.findPhrases')
-      replace: [
-        '/Users/amelia/Documents/eda/curator/_templates/rb/code.md'
-        '/Users/amelia/Documents/eda/curator/_templates/rb/links.md'
-        '/Users/amelia/Documents/eda/curator/_templates/rb/text.md']
-      dest: '/Users/amelia/Documents/eda/curator/readme-rb.md'
-      src: '/Users/amelia/Documents/eda/curator/_templates/template.md'
+    optionsRb = null
+    optionsCs = null
+    optionsJs = null
     before ->
-      fileStructure = 
-        _templates: '/Users/amelia/Documents/eda/curator/_templates'
-        template: '/Users/amelia/Documents/eda/curator/_templates/template.md'
-        newTemplate: '/Users/amelia/Documents/eda/curator/readme-rb.md'
-        rb: '/Users/amelia/Documents/eda/curator/_templates/rb'
-        code: '/Users/amelia/Documents/eda/curator/_templates/rb/code.md'
-        links: '/Users/amelia/Documents/eda/curator/_templates/rb/links.md'
-        text: '/Users/amelia/Documents/eda/curator/_templates/rb/text.md' 
+      fileStructureRb = 
+        _templates: cwd + '/_templates'
+        template: cwd + '/_templates/template.md'
+        newTemplate: cwd + '/readme-rb.md'
+        rb: cwd + '/_templates/rb'
+      fileStructureCs = 
+        _templates: cwd + '/_templates'
+        template: cwd + '/_templates/template.md'
+        newTemplate: cwd + '/readme-cs.md'
+        cs: cwd + '/_templates/cs'
+      fileStructureJs = 
+        _templates: cwd + '/_templates'
+        template: cwd + '/_templates/template.md'
+        newTemplate: cwd + '/readme-js.md'
+        js: cwd + '/_templates/js'
+      optionsRb = 
+        encoding: 'utf8'
+        replace: cwd + '/_templates/rb'
+        dest: cwd + '/readme-rb.md'
+        src: cwd + '/_templates/template.md'
+      optionsCs = 
+        encoding: 'utf8'
+        replace: cwd + '/_templates/cs'
+        dest: cwd + '/readme-cs.md'
+        src: cwd + '/_templates/template.md'
+      optionsJs = 
+        encoding: 'utf8'
+        replace: cwd + '/_templates/js'
+        dest: cwd + '/readme-js.md'
+        src: cwd + '/_templates/template.md'
       sinon.stub(models.findAndReplace, 'execute')
-      sinon.stub( models.fileStructure, 'getFolders').returns fileStructure
+      fileStub = sinon.stub(models.fileStructure, 'getFolders')
+      fileStub.onFirstCall().returns fileStructureRb
+      fileStub.onSecondCall().returns fileStructureCs
+      fileStub.onThirdCall().returns fileStructureJs
       builder.setOptions(folders)
     after ->
       models.findAndReplace.execute.restore()
@@ -93,4 +114,6 @@ describe 'Build', ->
       expect(models.fileStructure.getFolders.calledWith(folders[1])).to.eql true
       expect(models.fileStructure.getFolders.calledWith(folders[2])).to.eql true
     it 'calls models#findAndReplace#execute with the correct options', ->
-      expect(models.findAndReplace.execute.calledWith(options)).to.eql true
+      expect(models.findAndReplace.execute.args[0][0]).to.eql optionsRb
+      expect(models.findAndReplace.execute.args[1][0]).to.eql optionsCs
+      expect(models.findAndReplace.execute.args[2][0]).to.eql optionsJs
