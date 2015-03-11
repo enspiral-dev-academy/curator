@@ -12,7 +12,7 @@ class FindAndReplace
     .then ->
       console.log 'SUCCESS: ' + options.dest + ' successfully built' 
     .catch (err)->
-      console.log err, err.stack,  'ERROR: Make sure to run curator init <language name> first. Run build from the root directory'
+      console.log 'ERROR: Make sure to run curator init <language name> first. Run build from the root directory'
   readFile: (file, encoding) ->
     fs.readFileAsync(file, encoding)
   getRegEx: (templateFileData) ->
@@ -29,17 +29,16 @@ class FindAndReplace
       _templateData = if _templateData then _templateData else templateFileData
       if !fs.existsSync(filePath)
         _templateData = _templateData.replace('include:'+ fileName + ':', '')
-        @writeFile(destination, _templateData)
       else
-        fs.readFileAsync(filePath, encoding)
+        @readFile(filePath, encoding)
         .then (dataToInsert) =>
           _templateData = _templateData.replace('include:'+ fileName + ':', dataToInsert)
-          @writeFile(destination, _templateData)
         .catch (err) =>
-          @writeFile
-          console.log err, 'could not find file ' + filePath
-    ), concurrency: 1)
-
+          console.log 'could not find file ' + filePath
+    ), concurrency: 'Infinity')
+    .then( () => 
+      @writeFile(destination, _templateData)
+    )
   writeFile: (destination, _templateData) ->
     if !fs.existsSync(destination)
       return fs.openAsync(destination, 'wx+')
