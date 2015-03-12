@@ -13,6 +13,7 @@ models = require('../../lib/models/index')
 config = require('config')
 path = require('path')
 cwd = path.resolve(process.cwd())
+_ = require('lodash')
  
 describe 'Build', ->
   describe '#bricklay', ->
@@ -48,22 +49,41 @@ describe 'Build', ->
       folder = ['rb']
       before ->
         sinon.stub(builder, 'setOptions').returns BBPromise.resolve({})
+        sinon.stub(builder, 'buildMainReadme').returns BBPromise.resolve({})
         builder.bricklay folder
       after ->
+        builder.buildMainReadme.restore()
         builder.setOptions.restore()
       it 'calls builder#setOptions', ->
         expect(builder.setOptions.calledWith(folder)).to.eql true
+      it 'calls builder#buildMainReadme with the correct args', ->
+        expect(builder.buildMainReadme.calledWith(folder)).to.eql true
     describe 'with valid folders', ->
       folders = ['rb', 'cs', 'js']
       before ->
         sinon.stub(builder, 'setOptions').returns BBPromise.resolve({})
+        sinon.stub(builder, 'buildMainReadme').returns BBPromise.resolve({})
         builder.bricklay folders
       after ->
         builder.setOptions.restore()
+        builder.buildMainReadme.restore()
       it 'calls builder#setOptions', ->
         expect(builder.setOptions.calledWith(folders)).to.eql true
-      it 'calls builder#setOptions', ->
+      it 'calls builder#buildMainReadme with the correct args', ->
+        expect(builder.buildMainReadme.calledWith(folders)).to.eql true
+    describe 'with argument \'.\'', ->
+      folders = ['rb', 'cs']
+      before ->
+        sinon.stub(builder, 'setOptions').returns BBPromise.resolve({})
+        sinon.stub(builder, 'buildMainReadme').returns BBPromise.resolve({})
+        builder.bricklay '.'
+      after ->
+        builder.setOptions.restore()
+        builder.buildMainReadme.restore()
+      it 'calls builder#setOptions with the correct args', ->
         expect(builder.setOptions.calledWith(folders)).to.eql true
+      it 'calls builder#buildMainReadme with the correct args', ->
+        expect(builder.buildMainReadme.calledWith(folders)).to.eql true
   describe '#setOptions', ->
     folders = ['rb', 'cs', 'js']
     optionsRb = null
@@ -117,3 +137,41 @@ describe 'Build', ->
       expect(models.findAndReplace.execute.args[0][0]).to.eql optionsRb
       expect(models.findAndReplace.execute.args[1][0]).to.eql optionsCs
       expect(models.findAndReplace.execute.args[2][0]).to.eql optionsJs
+  describe '#buildMainReadme', ->
+    folders = ['rb', 'js', 'cs']
+    mainReadme = path.resolve(process.cwd(), 'README.md')
+    strings = _.map(folders, (folder) -> 
+      "[click here for "+ folder + " README](./readme-" + folder + ".md)\n"
+    )
+    describe 'with no existing destination', ->
+      before ->
+        sinon.stub(fs, 'existsSync').returns(false)
+        sinon.stub(fs, 'openAsync').returns(BBPromise.resolve())
+        sinon.stub(fs, 'writeFileAsync').returns(BBPromise.resolve({}))
+        builder.buildMainReadme(folders)
+      after ->
+        fs.existsSync.restore()
+        fs.writeFileAsync.restore()
+        fs.openAsync.restore()
+      it 'calls fs.existsSync with the destination file', ->
+        expect(fs.existsSync.args[0]).to.eql [mainReadme]
+      it 'calls fs.openAsync with the destination file', ->
+        expect(fs.openAsync.calledWith(mainReadme, 'wx+')).to.eql true
+      it 'calls fs.writeFileAsync with the correct args', ->
+        expect(fs.writeFileAsync.args[0][0]).to.eql(mainReadme, strings[0], encoding: 'utf8')
+    describe 'with existing destination', ->
+      before ->
+        sinon.stub(fs, 'existsSync').returns(true)
+        sinon.stub(fs, 'openAsync').returns(BBPromise.resolve())
+        sinon.stub(fs, 'writeFileAsync').returns(BBPromise.resolve({}))
+        builder.buildMainReadme(folders)
+      after ->
+        fs.existsSync.restore()
+        fs.writeFileAsync.restore()
+        fs.openAsync.restore()
+      it 'calls fs.existsSync with the destination file', ->
+        expect(fs.existsSync.args[0]).to.eql [mainReadme]
+      it 'doesn\'t call fs.openAsync with the destination file', ->
+        expect(fs.openAsync.called).to.eql false
+      it 'calls fs.writeFileAsync fwith the correct args', ->
+        expect(fs.writeFileAsync.args[0][0]).to.eql(mainReadme, strings[0], encoding: 'utf8')

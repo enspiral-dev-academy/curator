@@ -44,9 +44,11 @@ class FindAndReplace
       return fs.openAsync(destination, 'wx+')
       .then ->
         return fs.writeFileAsync(destination, _templateData, encoding: 'utf8')
+      .catch (err) ->
+        console.log err.stack
     fs.writeFileAsync(destination, _templateData, encoding: 'utf8')
     .catch (err) ->
-      console.log err
+      console.log err.stack
 
 module.exports = new FindAndReplace 
 

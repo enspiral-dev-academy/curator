@@ -5,6 +5,7 @@ chai.use sinonChai
 expect = chai.expect
 sinon = require('sinon')
 initController = require('../../lib/controllers/init')
+buildController = require('../../lib/controllers/build')
 uncache = require('require-uncache')
 path = require('path')
 cwd = process.cwd()
@@ -39,6 +40,31 @@ describe 'curator', ->
           'rb'
           'cs'
         ])).to.eql true
+  describe 'build', ->
+    describe 'with one cli argument', ->
+      before ->
+        args = ['node', 'some file path', 'build', 'rb']
+        sinon.stub buildController.prototype, 'bricklay'
+        process.argv = args
+        uncache path.resolve(cwd, 'curator')
+        require '../../curator'
+      after ->
+        buildController::bricklay.restore()
+      it 'sends the correct params to build #bricklay', ->
+        expect(buildController::bricklay.calledWith([ 'rb' ])).to.eql true
+    describe 'with multiple cli argument', ->
+      before ->
+        process.argv = ['node', 'second path to file', 'build', 'rb', 'cs']
+        sinon.stub(buildController.prototype, 'bricklay').returns true
+        # on first require of a file the argv is cached so need to uncache
+        # on subsequent requires of the same file it may not even run it again
+        # and so just use the cached info
+        uncache path.resolve(cwd, 'curator')
+        require '../../curator'
+      after ->
+        buildController::bricklay.restore()
+      it 'sends the correct params to init #initializeFolders', ->
+        expect(buildController::bricklay.calledWith(['rb', 'cs'])).to.eql true
   describe 'languages', ->
     before ->
       uncache path.resolve(cwd, 'curator')

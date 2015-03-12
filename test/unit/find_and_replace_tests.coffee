@@ -24,7 +24,7 @@ describe 'find and replace model', ->
 			sinon.stub(findAndReplace, 'readFile').returns(BBPromise.resolve("fake template data"))
 			sinon.stub(findAndReplace, 'setTemplateData').returns(BBPromise.resolve({}))
 			sinon.stub(findAndReplace, 'getRegEx').returns(['fake', 'array'])
-			sinon.spy(console, 'log')
+			sinon.stub(console, 'log')
 			findAndReplace.execute(options)
 		after ->
 			findAndReplace.readFile.restore()

@@ -49,18 +49,34 @@ describe 'init', ->
       it 'console.logs an invalidArgument error', ->
         expect(console.log).to.have.been.calledWith (new (errors.invalidArgument)).toString()
     describe 'with valid folders', ->
-      folders = ['rb', 'cs', 'js' ]
+      folders = ['rb', 'cs']
       before ->
         sinon.stub console, 'log'
         sinon.stub(init, 'createFolders').returns BBPromise.resolve({})
       after ->
         console.log.restore()
         init.createFolders.restore()
+      describe 'with argument \'.\'', ->
+        before ->
+          sinon.spy fs, 'mkdirAsync'
+          del [ '_templates/**' ], ->
+          init.initializeFolders '.'
+        after (done) ->
+          fs.mkdirAsync.restore()
+          del [ '_templates/**' ], done
+        it 'calls fs.mkdirAsync', ->
+          expect(fs.mkdirAsync.calledWith(templatePath)).to.eql true
+        it 'creates _templates folder', ->
+          expect(fs.existsSync(templatePath)).to.eql true
+        it 'creates templates.md file', ->
+          expect(fs.existsSync(templatePath + '/template.md')).to.eql true
+        it 'calls #createFolders with correct params', ->
+          expect(init.createFolders.calledWith(folders)).to.eql true
       describe 'with no existing _templates folder', ->
         before ->
           sinon.spy fs, 'mkdirAsync'
           del [ '_templates/**' ], ->
-            init.initializeFolders folders
+          init.initializeFolders folders
         after (done) ->
           fs.mkdirAsync.restore()
           del [ '_templates/**' ], done
@@ -76,7 +92,7 @@ describe 'init', ->
         describe 'with no existing templates.md file', ->
           before ->
             fs.mkdirAsync(templatePath).then ->
-              sinon.spy fs, 'mkdirAsync'
+            sinon.spy fs, 'mkdirAsync'
           after (done) ->
             fs.mkdirAsync.restore()
             del [ '_templates/**' ], done
@@ -90,8 +106,8 @@ describe 'init', ->
         describe 'with existing templates.md file', ->
           before ->
             fs.mkdirAsync(templatePath).then ->
-              sinon.spy fs, 'mkdirAsync'
-              fs.openAsync templatePath + '/template.md', 'wx+'
+            sinon.spy fs, 'mkdirAsync'
+            fs.openAsync templatePath + '/template.md', 'wx+'
           after (done) ->
             fs.mkdirAsync.restore()
             del [ '_templates/**' ], done
@@ -114,12 +130,14 @@ describe 'init', ->
       )
     describe 'with existing files', ->
       before ->
+        sinon.stub console, 'log'
         sinon.stub init, 'createFiles'
         existStub = sinon.stub(fs, 'existsSync')
         existStub.returns false
         sinon.stub(fs, 'mkdirAsync').returns(BBPromise.resolve({}))
         init.createFolders folders
       after (done) ->
+        console.log.restore()
         init.createFiles.restore()
         fs.existsSync.restore()
         fs.mkdirAsync.restore()
@@ -136,12 +154,14 @@ describe 'init', ->
         expect(init.createFiles.calledThrice).to.eql true
     describe 'with no existing files', ->
      before ->
+        sinon.stub console, 'log'
         sinon.stub init, 'createFiles'
         existStub = sinon.stub(fs, 'existsSync')
         existStub.returns true
         sinon.stub(fs, 'mkdirAsync').returns(BBPromise.resolve({}))
         init.createFolders folders
       after (done) ->
+        console.log.restore()
         init.createFiles.restore()
         fs.existsSync.restore()
         fs.mkdirAsync.restore()
