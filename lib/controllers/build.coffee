@@ -13,8 +13,10 @@ mainReadme = path.resolve(process.cwd(), 'README.md')
 class Build extends BaseController
   # constructor: ->
   bricklay: (folders) ->
+    if folders && folders[0] is '-' && folders[1] is 'A'
+      folders = [folders[0] + folders[1]]
     return unless @checkFolders(folders)
-    folders = if (folders[0] is '*') then config.get('curator.allLanguages') else folders
+    folders = if (folders[0] is '-A') then config.get('curator.allLanguages') else folders
     @setOptions folders
     .then () => 
       @buildMainReadme(folders)

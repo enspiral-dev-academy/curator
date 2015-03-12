@@ -56,11 +56,11 @@ describe 'init', ->
       after ->
         console.log.restore()
         init.createFolders.restore()
-      describe 'with argument \'*\'', ->
+      describe 'with argument \'-A\'', ->
         before ->
           sinon.spy fs, 'mkdirAsync'
           del [ '_templates/**' ], ->
-          init.initializeFolders '*'
+          init.initializeFolders '-A'
         after (done) ->
           fs.mkdirAsync.restore()
           del [ '_templates/**' ], done

@@ -16,8 +16,10 @@ class Init extends BaseController
     @templatePath = path.resolve(cwd, mainFolder)
 
   initializeFolders: (folders) ->
+    if folders && folders[0] is '-' && folders[1] is 'A'
+      folders = [folders[0] + folders[1]]
     return unless @checkFolders(folders)
-    folders = if (folders[0] is '*') then config.get('curator.allLanguages') else folders
+    folders = if (folders[0] is '-A') then config.get('curator.allLanguages') else folders
     templateFile = path.resolve(@templatePath, 'template.md')
     if fs.existsSync(@templatePath)
       # folder already there
