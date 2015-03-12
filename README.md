@@ -37,7 +37,7 @@ curator init rb cs js
 - creates a _template folder in current directory, with sub folders for each language, each with code, text and links files. Template.md is also created for the language agnostic readme content
 
 ```
-curator init .
+curator init *
 ```
 
 - will initialize ruby and c#
@@ -59,7 +59,7 @@ curator build rb cs js
 - creates a _template folder in current directory, with sub folders for each language, each with code, text and links files. Template.md is also created for the language agnostic readme content
 
 ```
-curator build .
+curator build *
 ```
 
 - will build ruby and c#

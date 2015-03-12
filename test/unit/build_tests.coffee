@@ -71,12 +71,12 @@ describe 'Build', ->
         expect(builder.setOptions.calledWith(folders)).to.eql true
       it 'calls builder#buildMainReadme with the correct args', ->
         expect(builder.buildMainReadme.calledWith(folders)).to.eql true
-    describe 'with argument \'.\'', ->
+    describe 'with argument \'*\'', ->
       folders = ['rb', 'cs']
       before ->
         sinon.stub(builder, 'setOptions').returns BBPromise.resolve({})
         sinon.stub(builder, 'buildMainReadme').returns BBPromise.resolve({})
-        builder.bricklay '.'
+        builder.bricklay '*'
       after ->
         builder.setOptions.restore()
         builder.buildMainReadme.restore()

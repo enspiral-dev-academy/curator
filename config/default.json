@@ -4,7 +4,7 @@
 			"rb": "Ruby",
 			"cs": "C#",
 			"js": "JavaScript",
-			".": "all"
+			"*": "all"
 		},
 		"allLanguages": ["rb", "cs"],
 		"fileTypes": ["code", "links", "text"],

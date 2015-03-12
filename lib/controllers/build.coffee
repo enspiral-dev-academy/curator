@@ -14,7 +14,7 @@ class Build extends BaseController
   # constructor: ->
   bricklay: (folders) ->
     return unless @checkFolders(folders)
-    folders = if (folders[0] is '.') then config.get('curator.allLanguages') else folders
+    folders = if (folders[0] is '*') then config.get('curator.allLanguages') else folders
     @setOptions folders
     .then () => 
       @buildMainReadme(folders)
@@ -31,7 +31,7 @@ class Build extends BaseController
   buildMainReadme: (folders) ->
     readmeData = null
     BBPromise.map(folders,  ((folder) -> 
-      data = "[click here for "+ folder + " README](./readme-" + folder + ".md)\n"
+      data = "[click here for "+ folder + " README](./readme-" + folder + ".md)\n\n"
       if !fs.existsSync(mainReadme)
         return fs.openAsync(mainReadme, 'wx+')
         .then () ->
