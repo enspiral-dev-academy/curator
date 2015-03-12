@@ -13,10 +13,7 @@ describe 'file structure model', ->
 		  _templates: process.cwd() + '/_templates',
 		  template: process.cwd() + '/_templates/template.md',
 		  newTemplate: process.cwd() + '/readme-rb.md',
-		  rb: process.cwd() + '/_templates/rb',
-		  code: process.cwd() + '/_templates/rb/code.md',
-		  links: process.cwd() + '/_templates/rb/links.md',
-		  text: process.cwd() + '/_templates/rb/text.md' }
+		  rb: process.cwd() + '/_templates/rb' }
 		before ->
 	  	result = fileStructure.getFolders('rb')
 	  it 'returns the correct folder info', ->

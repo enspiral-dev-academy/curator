@@ -1,6 +1,6 @@
 {
   "name": "eda-curator",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "tool for building curriculum",
   "main": "curator.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "url": "https://github.com/enspiral-dev-academy/curator"
   },
   "keywords": [
-    "open-edu"
+    "open-edu", "enspiral", "enspiral dev academy", "curator"
   ],
   "author": "Enspiral Dev Academy",
   "license": "AGPL",

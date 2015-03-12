@@ -12,10 +12,6 @@ class FileStructure
     languageReadme = 'readme-' + language + '.md'
     files.newTemplate = path.resolve(cwd, languageReadme)
     files[language] = path.resolve(files._templates, language)
-    _.forEach config.get('curator.fileTypes'), (file) ->
-      fileName = file + '.md'
-      files[file] = path.resolve(files[language], fileName)
-      return
     files
 
 module.exports = new FileStructure
