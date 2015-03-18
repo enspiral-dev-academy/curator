@@ -13,7 +13,9 @@ models = require('../../lib/models/index')
 config = require('config')
 path = require('path')
 cwd = path.resolve(process.cwd())
+_templateFolderPath = path.resolve(cwd, '_templates')
 _ = require('lodash')
+del = require('del')
  
 describe 'Build', ->
   describe '#bricklay', ->
@@ -48,10 +50,12 @@ describe 'Build', ->
     describe 'with ONE valid folder', ->
       folder = ['rb']
       before ->
+        fs.mkdirAsync(_templateFolderPath)
         sinon.stub(builder, 'setOptions').returns BBPromise.resolve({})
         sinon.stub(builder, 'buildMainReadme').returns BBPromise.resolve({})
         builder.bricklay folder
       after ->
+        del [ '_templates/**' ], ->
         builder.buildMainReadme.restore()
         builder.setOptions.restore()
       it 'calls builder#setOptions', ->
@@ -61,10 +65,12 @@ describe 'Build', ->
     describe 'with valid folders', ->
       folders = ['rb', 'cs', 'js']
       before ->
+        fs.mkdirAsync(_templateFolderPath)
         sinon.stub(builder, 'setOptions').returns BBPromise.resolve({})
         sinon.stub(builder, 'buildMainReadme').returns BBPromise.resolve({})
         builder.bricklay folders
       after ->
+        del [ '_templates/**' ], ->
         builder.setOptions.restore()
         builder.buildMainReadme.restore()
       it 'calls builder#setOptions', ->
@@ -74,10 +80,12 @@ describe 'Build', ->
     describe 'with argument \'-A\'', ->
       folders = ['rb', 'cs']
       before ->
+        fs.mkdirAsync(_templateFolderPath)
         sinon.stub(builder, 'setOptions').returns BBPromise.resolve({})
         sinon.stub(builder, 'buildMainReadme').returns BBPromise.resolve({})
         builder.bricklay '-A'
       after ->
+        del [ '_templates/**' ], ->
         builder.setOptions.restore()
         builder.buildMainReadme.restore()
       it 'calls builder#setOptions with the correct args', ->

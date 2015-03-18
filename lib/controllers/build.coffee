@@ -9,6 +9,7 @@ BaseController = require('./base_controller')
 path = require('path')
 fs = BBPromise.promisifyAll(require('fs'))
 mainReadme = path.resolve(process.cwd(), 'README.md')
+_templatesFolder = path.resolve(process.cwd(), '_templates')
 
 class Build extends BaseController
   # constructor: ->
@@ -16,6 +17,8 @@ class Build extends BaseController
     if folders && folders[0] is '-' && folders[1] is 'A'
       folders = [folders[0] + folders[1]]
     return unless @checkFolders(folders)
+    if !fs.existsSync(_templatesFolder)
+      return Errors.file.invalidRequest()
     folders = if (folders[0] is '-A') then config.get('curator.allLanguages') else folders
     @setOptions folders
     .then () => 

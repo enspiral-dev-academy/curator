@@ -1,6 +1,6 @@
 {
   "name": "eda-curator",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "tool for building curriculum",
   "main": "curator.js",
   "scripts": {
